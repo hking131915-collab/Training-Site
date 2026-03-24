@@ -145,7 +145,7 @@
 
     <h3>Notes</h3>
     <h5 style="color:red;">Reported Injuries, Damaged Property, Safety Concerns, Associated Reports</h5>
-          <textarea id="trainingNotes" rows="4" style="width:260px; font-size:16px;"></textarea><br><br>
+    <textarea id="trainingNotes" rows="4" style="width:260px; font-size:16px;"></textarea><br><br>
 
     <h5>By clicking Start Session you acknowledge that all employees scanned/entered attended this training in its entirety.</h5>
 
@@ -173,6 +173,10 @@
 
     <h2>Instructors</h2>
     <ul id="instructorList"></ul>
+
+    <!-- ⭐ NEW: INSTRUCTOR HOURS SECTION -->
+    <h3>Instructor Hours</h3>
+    <div id="instructorHours" style="max-width:450px; margin:0 auto; text-align:left;"></div>
 
     <p id="status"></p>
 
@@ -271,7 +275,7 @@
       item.querySelector(".instructorToggle").addEventListener("change", (e) => {
         if (e.target.checked) {
           if (!instructors.some(i => i.starnumber === starnumber)) {
-            instructors.push({ name, starnumber });
+            instructors.push({ name, starnumber, hours: "" });
           }
         } else {
           instructors = instructors.filter(i => i.starnumber !== starnumber);
@@ -284,6 +288,32 @@
       list.prepend(item);
     }
 
+    // ⭐ UPDATE INSTRUCTOR HOURS SECTION
+    function updateInstructorHours() {
+      const container = document.getElementById("instructorHours");
+      container.innerHTML = "";
+
+      instructors.forEach((i, index) => {
+        const block = document.createElement("div");
+        block.style = "background:#f2f2f2; padding:10px; border-radius:6px; margin-bottom:10px;";
+
+        block.innerHTML = `
+          <strong>${i.name} — ${i.starnumber}</strong><br>
+          <label>Hours:</label><br>
+          <input type="number" min="0" step="1" id="hours_${index}" value="${i.hours || ""}"
+                 placeholder="Enter hours"
+                 style="width:120px; padding:5px; margin-top:5px;">
+        `;
+
+        container.appendChild(block);
+
+        block.querySelector("input").addEventListener("input", (e) => {
+          instructors[index].hours = e.target.value;
+          saveSessionToLocalStorage();
+        });
+      });
+    }
+
     // ⭐ UPDATE INSTRUCTOR LIST
     function updateInstructorSection() {
       const instructorList = document.getElementById("instructorList");
@@ -292,6 +322,8 @@
       instructors.forEach(i => {
         instructorList.innerHTML += `<li>${i.name} — ${i.starnumber}</li>`;
       });
+
+      updateInstructorHours();
     }
 
     function showWarning(message) {
@@ -404,7 +436,7 @@
       document.getElementById("manualStar").value = "";
     });
 
-    // ⭐ DOWNLOAD CSV WITH SEPARATE INSTRUCTOR LIST
+    // ⭐ DOWNLOAD CSV WITH INSTRUCTOR HOURS
     function downloadCSV() {
       if (sessionScans.length === 0) {
         alert("No attendees recorded.");
@@ -431,10 +463,10 @@
 
       // ⭐ INSTRUCTOR LIST SECTION
       csv += "--- INSTRUCTORS ---\n";
-      csv += "Name,Star Number\n";
+      csv += "Name,Star Number,Hours\n";
 
       instructors.forEach(i => {
-        csv += `"${i.name}","${i.starnumber}"\n`;
+        csv += `"${i.name}","${i.starnumber}","${i.hours || ""}"\n`;
       });
 
       csv += "\n";
@@ -474,30 +506,4 @@
       document.getElementById("trainingNotes").value = "";
 
       document.getElementById("scanList").innerHTML = "";
-      document.getElementById("instructorList").innerHTML = "";
-
-      sessionScans = [];
-      instructors = [];
-
-      document.getElementById("startSessionBtn").style.display = "inline-block";
-      document.getElementById("newSessionBtn").style.display = "none";
-      document.getElementById("downloadCsvBtn").style.display = "none";
-      document.getElementById("reader").style.display = "none";
-      document.getElementById("manualEntry").style.display = "none";
-
-      if (html5QrCode) html5QrCode.stop().catch(() => {});
-      html5QrCode = null;
-
-      localStorage.removeItem("trainingSession");
-    });
-
-    // ⭐ AUTO-SAVE TRAINING FIELD CHANGES
-    ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar"]
-      .forEach(id => {
-        document.getElementById(id).addEventListener("input", saveSessionToLocalStorage);
-      });
-
-  </script>
-
-</body>
-</html>
+      document.getElementById
