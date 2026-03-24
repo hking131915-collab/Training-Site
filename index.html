@@ -151,7 +151,6 @@
 
     <button id="startSessionBtn">Start Session</button>
     <button id="newSessionBtn" style="display:none;">New Session</button>
-    <button id="downloadCsvBtn" style="display:none;">End Session/Submit</button>
 
     <div id="reader"></div>
 
@@ -174,11 +173,12 @@
     <h2>Instructors</h2>
     <ul id="instructorList"></ul>
 
-    <!-- ⭐ NEW: INSTRUCTOR HOURS SECTION -->
-    <h3>Instructor Hours</h3>
-    <div id="instructorHours" style="max-width:450px; margin:0 auto; text-align:left;"></div>
+    <div style="margin-top: 40px; text-align : center;">
+	  <button id="downloadCsvBtn" style="display:none;">End Session / Submit</button>
+    </div>
 
-    <p id="status"></p>
+
+        <p id="status"></p>
 
   </div> <!-- END mainContent -->
 
@@ -288,43 +288,30 @@
       list.prepend(item);
     }
 
-    // ⭐ UPDATE INSTRUCTOR HOURS SECTION
-    function updateInstructorHours() {
-      const container = document.getElementById("instructorHours");
-      container.innerHTML = "";
-
-      instructors.forEach((i, index) => {
-        const block = document.createElement("div");
-        block.style = "background:#f2f2f2; padding:10px; border-radius:6px; margin-bottom:10px;";
-
-        block.innerHTML = `
-          <strong>${i.name} — ${i.starnumber}</strong><br>
-          <label>Hours:</label><br>
-          <input type="number" min="0" step="1" id="hours_${index}" value="${i.hours || ""}"
-                 placeholder="Enter hours"
-                 style="width:120px; padding:5px; margin-top:5px;">
-        `;
-
-        container.appendChild(block);
-
-        block.querySelector("input").addEventListener("input", (e) => {
-          instructors[index].hours = e.target.value;
-          saveSessionToLocalStorage();
-        });
-      });
-    }
-
-    // ⭐ UPDATE INSTRUCTOR LIST
+     // ⭐ UPDATE INSTRUCTOR LIST
     function updateInstructorSection() {
-      const instructorList = document.getElementById("instructorList");
-      instructorList.innerHTML = "";
+       const instructorList = document.getElementById("instructorList");
+       instructorList.innerHTML = "";
 
-      instructors.forEach(i => {
-        instructorList.innerHTML += `<li>${i.name} — ${i.starnumber}</li>`;
-      });
+       instructors.forEach((i, index) => {
+           instructorList.innerHTML += `
+              <li>
+                 ${i.name} — ${i.starnumber}
+                 <input type="number" min="0" step="1" 
+                      value="${i.hours || ""}" 
+                      placeholder="Hours"
+                      style="width:70px; margin-left:10px;"
+                      oninput="updateInstructorHoursValue(${index}, this.value)">
+      </li>
+    `;
+  });
+}
 
-      updateInstructorHours();
-    }
+     function updateInstructorHoursValue(index, value) {
+        instructors[index].hours = value;
+        saveSessionToLocalStorage();
+}
+
 
     function showWarning(message) {
       const status = document.getElementById("status");
@@ -463,11 +450,12 @@
 
       // ⭐ INSTRUCTOR LIST SECTION
       csv += "--- INSTRUCTORS ---\n";
-      csv += "Name,Star Number,Hours\n";
+     csv += "Name,Star Number,Hours\n";
 
-      instructors.forEach(i => {
-        csv += `"${i.name}","${i.starnumber}","${i.hours || ""}"\n`;
-      });
+	instructors.forEach(i => {
+ 		 csv += `"${i.name}","${i.starnumber}","${i.hours || ""}"\n`;
+});
+
 
       csv += "\n";
 
@@ -507,8 +495,7 @@
 
       document.getElementById("scanList").innerHTML = "";
       document.getElementById("instructorList").innerHTML = "";
-      document.getElementById("instructorHours").innerHTML = "";
-
+    
       sessionScans = [];
       instructors = [];
 
