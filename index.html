@@ -493,10 +493,10 @@
       document.getElementById("newSessionBtn").click();
     }
 
-    document.getElementById("downloadCsvBtn").addEventListener("click", downloadCSV);
+    document.getElementById("downloadCsvBtn").addEventListener("click", downloadCSV)
 
-    // ⭐ END SESSION
-    document.getElementById("newSessionBtn").addEventListener("click", () => {
+   		// ⭐ END SESSION
+      		 document.getElementById("newSessionBtn").addEventListener("click", () => {
       sessionActive = false;
 
       unlockFields();
@@ -506,20 +506,22 @@
       document.getElementById("trainingNotes").value = "";
 
       document.getElementById("scanList").innerHTML = "";
-      document.getElementById
-     		document.getElementById("scanList").innerHTML = "";
-     		document.getElementById("instructorList").innerHTML = "";
-   		document.getElementById("instructorHours").innerHTML = "";
+      document.getElementById("instructorList").innerHTML = "";
+      document.getElementById("instructorHours").innerHTML = "";
 
-     		 sessionScans = [];
-     		 instructors = [];
+      sessionScans = [];
+      instructors = [];
 
-  		document.getElementById("startSessionBtn").style.display = "inline-block";
+      document.getElementById("startSessionBtn").style.display
+
+
+
+document.getElementById("startSessionBtn").style.display = "inline-block";
      		document.getElementById("newSessionBtn").style.display = "none";
       		document.getElementById("downloadCsvBtn").style.display = "none";
-    		document.getElementById("reader").style.display = "none";
-  	    	document.getElementById("manualEntry").style.display = "none";
-		
+      		document.getElementById("reader").style.display = "none";
+      		document.getElementById("manualEntry").style.display = "none";
+
       if (html5QrCode) {
         html5QrCode.stop().catch(() => {});
       }
