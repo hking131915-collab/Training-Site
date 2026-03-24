@@ -507,3 +507,34 @@
 
       document.getElementById("scanList").innerHTML = "";
       document.getElementById
+     		document.getElementById("scanList").innerHTML = "";
+     		document.getElementById("instructorList").innerHTML = "";
+   		document.getElementById("instructorHours").innerHTML = "";
+
+     		 sessionScans = [];
+     		 instructors = [];
+
+  		document.getElementById("startSessionBtn").style.display = "inline-block";
+     		document.getElementById("newSessionBtn").style.display = "none";
+      		document.getElementById("downloadCsvBtn").style.display = "none";
+    		document.getElementById("reader").style.display = "none";
+  	    	document.getElementById("manualEntry").style.display = "none";
+		
+      if (html5QrCode) {
+        html5QrCode.stop().catch(() => {});
+      }
+      html5QrCode = null;
+
+      localStorage.removeItem("trainingSession");
+    });
+
+    // ⭐ AUTO-SAVE TRAINING FIELD CHANGES
+    ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar","trainingNotes"]
+      .forEach(id => {
+        document.getElementById(id).addEventListener("input", saveSessionToLocalStorage);
+      });
+
+  </script>
+
+</body>
+</html>
