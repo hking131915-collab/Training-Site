@@ -1,17 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>QR Training Scanner</title>
-  <script src="https://unpkg.com/html5-qrcode"></script>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QR Training Scanner</title>
+  https://unpkg.com/html5-qrcode</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { font-family: sans-serif; text-align: center; margin-top: 20px; }
-    #reader { width: 300px; margin: 0 auto; display:none; }
-    input {
+    #reader { width: 320px; margin: 0 auto; display:none; }
+    input, textarea {
       padding: 6px;
       margin: 4px;
-      width: 250px;
+      width: 260px;
       font-size: 16px;
     }
     button {
@@ -20,28 +21,24 @@
       margin: 10px;
       cursor: pointer;
     }
-
-    #scanList {
+    #scanList, #instructorList {
       list-style: none;
       padding: 0;
-      max-width: 450px;
+      max-width: 480px;
       margin: 20px auto;
       text-align: left;
     }
-
-    #scanList li {
+    #scanList li, #instructorList li {
       background: #f2f2f2;
       padding: 8px;
       margin-bottom: 6px;
       border-radius: 4px;
       font-size: 16px;
-
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
     }
-
     .removeBtn {
       background:#c62828;
       color:white;
@@ -50,105 +47,64 @@
       border-radius:4px;
       cursor:pointer;
     }
+    #status { font-size: 18px; margin-top: 15px; min-height: 24px; }
 
-    #status {
-      font-size: 18px;
-      margin-top: 15px;
-      height: 24px;
-    }
-
-    /* ⭐ Instructor Toggle Switch */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 24px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
+    /* Instructor Toggle Switch */
+    .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0;
-      right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .3s;
-      border-radius: 24px;
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc; transition: .3s; border-radius: 24px;
     }
-
     .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
+      position: absolute; content: "";
+      height: 18px; width: 18px; left: 3px; bottom: 3px;
+      background-color: white; transition: .3s; border-radius: 50%;
     }
-
-    input:checked + .slider {
-      background-color: #4CAF50;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(22px);
-    }
+    input:checked + .slider { background-color: #4CAF50; }
+    input:checked + .slider:before { transform: translateX(22px); }
   </style>
 </head>
-
 <body>
 
   <!-- 🔐 PASSWORD SCREEN -->
   <div id="passwordScreen">
-    <img src="Logo_NS_cmyk WO.png" alt="Company Logo" style="width: 400px;">
+    Logo_NS_cmyk WO.png
     <h1>ACSO Training Roster</h1>
     <h2>Enter Password</h2>
-    <input id="accessPassword" type="password" placeholder="Password"><br><br>
-    <button onclick="checkPassword()">Enter</button>
+    <input id="accessPassword" type="password" placeholder="Password" /><br /><br />
+    <button id="enterBtn">Enter</button>
     <p id="passwordError" style="color:red;"></p>
   </div>
 
   <!-- MAIN CONTENT -->
   <div id="mainContent" style="display:none;">
-
     <div style="text-align:center; margin-bottom: 20px;">
-      <img src="Logo_NS_cmyk WO.png" alt="Company Logo" style="width: 400px;">
-    </div>
-
-    <h1>ACSO Training<br>Personnel Attendance Roster</h1>
+      <img src="Logo_NS_cmyk WO.png" alt="Company Logo" styler/>Personnel Attendance Roster</h1>
 
     <h3>Training Information</h3>
+    <label>Training Title:</label><br />
+    <input id="trainingTitle" type="text" /><br /><br />
 
-    <label>Training Title:</label><br>
-    <input id="trainingTitle" type="text"><br><br>
+    <label>Date:</label><br />
+    <input id="trainingDate" type="date" /><br /><br />
 
-    <label>Date:</label><br>
-    <input id="trainingDate" type="date"><br><br>
-
-    <label>Hours:</label><br>
-    <input id="trainingHours" type="number" step="0.1"><br><br>
+    <label>Hours:</label><br />
+    <input id="trainingHours" type="number" step="0.1" /><br /><br />
 
     <h3>Submitter/Supervisor Information</h3>
+    <label>Your Name:</label><br />
+    <input id="submitterName" type="text" placeholder="Enter your full name" /><br /><br />
 
-    <label>Your Name:</label><br>
-    <input id="submitterName" type="text" placeholder="Enter your full name"><br><br>
-
-    <label>Your Star Number:</label><br>
-    <input id="submitterStar" type="text" placeholder="Enter your star number"><br><br>
+    <label>Your Star Number:</label><br />
+    <input id="submitterStar" type="text" placeholder="Enter your star number" /><br /><br />
 
     <h3>Notes</h3>
     <h5 style="color:red;">Reported Injuries, Damaged Property, Safety Concerns, Associated Reports</h5>
-    <textarea id="trainingNotes" rows="4" style="width:260px; font-size:16px;"></textarea><br><br>
+    <textarea id="trainingNotes" rows="4" style="width:260px; font-size:16px;"></textarea><br /><br />
 
     <h5>By clicking Start Session you acknowledge that all employees scanned/entered attended this training in its entirety.</h5>
-
     <button id="startSessionBtn">Start Session</button>
     <button id="newSessionBtn" style="display:none;">New Session</button>
 
@@ -157,13 +113,10 @@
     <!-- ⭐ MANUAL ENTRY SECTION -->
     <div id="manualEntry" style="display:none; margin-top: 20px;">
       <h3>Manual Entry</h3>
-
-      <label>Attendee Name:</label><br>
-      <input id="manualName" type="text" placeholder="Enter full name"><br><br>
-
-      <label>Star Number:</label><br>
-      <input id="manualStar" type="text" placeholder="Enter star number"><br><br>
-
+      <label>Attendee Name:</label><br />
+      <input id="manualName" type="text" placeholder="Enter full name" /><br /><br />
+      <label>Star Number:</label><br />
+      <input id="manualStar" type="text" placeholder="Enter star number" /><br /><br />
       <button id="addManualBtn">Add Attendee</button>
     </div>
 
@@ -173,357 +126,402 @@
     <h2>Instructors</h2>
     <ul id="instructorList"></ul>
 
-    <div style="margin-top: 40px; text-align : center;">
-	  <button id="downloadCsvBtn" style="display:none;">End Session / Submit</button>
+    <div style="margin-top: 40px; text-align: center;">
+      <button id="downloadCsvBtn" style="display:none;">End Session / Submit</button>
     </div>
 
-
-        <p id="status"></p>
-
+    <p id="status"></p>
   </div> <!-- END mainContent -->
 
-  <script>
 
-    // 🔐 PASSWORD CHECK
-    function checkPassword() {
-      const entered = document.getElementById("accessPassword").value;
-      const correctPassword = "4711"; // CHANGE THIS
-
-      if (entered === correctPassword) {
-        document.getElementById("passwordScreen").style.display = "none";
-        document.getElementById("mainContent").style.display = "block";
-      } else {
-        document.getElementById("passwordError").textContent = "Incorrect password";
-      }
+<script>
+  // 🔐 PASSWORD CHECK (keeps your original inline onclick="checkPassword()")
+  function checkPassword() {
+    const entered = document.getElementById("accessPassword").value;
+    const correctPassword = "4711"; // TODO: move server-side for real security
+    if (entered === correctPassword) {
+      document.getElementById("passwordScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+    } else {
+      document.getElementById("passwordError").textContent = "Incorrect password";
     }
+  }
 
-    let sessionActive = false;
-    let html5QrCode = null;
-    let lastScan = "";
-    let scanCooldown = false;
+  // --- Session state ---
+  let sessionActive = false;
+  let html5QrCode = null;
+  let lastScan = "";
+  let scanCooldown = false;
+  let sessionScans = [];
+  let instructors = [];
 
-    let sessionScans = [];
-    let instructors = [];
+  // --- LocalStorage constants & helpers ---
+  const STORAGE_KEY = "trainingSession";
+  const AUTO_RESTART_CAMERA = true; // set false if you don't want camera auto-start after restore
 
-    const beep = new Audio("beep2.mp3");
-    beep.load();
-
-    function lockFields() {
-      ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar"]
-        .forEach(id => document.getElementById(id).disabled = true);
+  function safeGetItem(key) {
+    try {
+      const v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : null;
+    } catch (e) {
+      console.warn("Corrupt JSON in localStorage; clearing.", e);
+      localStorage.removeItem(key);
+      return null;
     }
+  }
 
-    function unlockFields() {
-      ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar"]
-        .forEach(id => document.getElementById(id).disabled = false);
-    }
-
-    window.onload = () => {
-      localStorage.removeItem("trainingSession");
+  // Persist session to localStorage
+  function saveSessionToLocalStorage() {
+    const sessionData = {
+      trainingTitle: document.getElementById("trainingTitle").value,
+      trainingDate: document.getElementById("trainingDate").value,
+      trainingHours: document.getElementById("trainingHours").value,
+      submitterName: document.getElementById("submitterName").value,
+      submitterStar: document.getElementById("submitterStar").value,
+      trainingNotes: document.getElementById("trainingNotes").value,
+      sessionScans: sessionScans,
+      instructors: instructors,
+      sessionActive: sessionActive
     };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData));
+  }
 
-    function saveSessionToLocalStorage() {
-      const sessionData = {
-        trainingTitle: document.getElementById("trainingTitle").value,
-        trainingDate: document.getElementById("trainingDate").value,
-        trainingHours: document.getElementById("trainingHours").value,
-        submitterName: document.getElementById("submitterName").value,
-        submitterStar: document.getElementById("submitterStar").value,
-        trainingNotes: document.getElementById("trainingNotes").value,
-        sessionScans: sessionScans,
-        instructors: instructors,
-        sessionActive: sessionActive
-      };
-      localStorage.setItem("trainingSession", JSON.stringify(sessionData));
-    }
+  // --- UI helpers ---
+  const beep = new Audio("beep2.mp3");
+  beep.load();
 
-    // ⭐ ADD ATTENDEE WITH INSTRUCTOR TOGGLE + LABEL ABOVE
-    function addScanToList(name, starnumber) {
-      const list = document.getElementById("scanList");
-      const item = document.createElement("li");
+  function lockFields() {
+    ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar"]
+      .forEach(id => document.getElementById(id).disabled = true);
+  }
+  function unlockFields() {
+    ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar"]
+      .forEach(id => document.getElementById(id).disabled = false);
+  }
 
-      const isInstructor = instructors.some(i => i.starnumber === starnumber);
+  function showWarning(message) {
+    const status = document.getElementById("status");
+    status.style.color = "red";
+    status.textContent = message;
+    setTimeout(() => { status.textContent = ""; }, 3000);
+  }
+  function clearWarning() {
+    const status = document.getElementById("status");
+    status.textContent = "";
+    status.style.color = "black";
+  }
 
-      item.innerHTML = `
-        <span class="attendeeName">${name} — ${starnumber}</span>
+  // Add attendee to list with Instructor toggle
+  function addScanToList(name, starnumber) {
+    const list = document.getElementById("scanList");
+    const item = document.createElement("li");
+    const isInstructor = instructors.some(i => i.starnumber === starnumber);
 
-        <div style="display:flex; align-items:center; gap:10px;">
-
-          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-            <span style="font-size:14px;">Instructor</span>
-
-            <label class="switch">
-              <input type="checkbox" class="instructorToggle" ${isInstructor ? "checked" : ""}>
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <button class="removeBtn">Remove</button>
+    item.innerHTML = `
+      <span class="attendeeName">${name} — ${starnumber}</span>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <span style="font-size:14px;">Instructor</span>
+          <label class="switch">
+            <input type="checkbox" class="instructorToggle" ${isInstructor ? "checked" : ""}>
+            <span class="slider"></span>
+          </label>
         </div>
-      `;
-
-      // Remove attendee
-      item.querySelector(".removeBtn").addEventListener("click", () => {
-        sessionScans = sessionScans.filter(s => s.starnumber !== starnumber);
-        instructors = instructors.filter(i => i.starnumber !== starnumber);
-        item.remove();
-        updateInstructorSection();
-        saveSessionToLocalStorage();
-      });
-
-      // Instructor toggle
-      item.querySelector(".instructorToggle").addEventListener("change", (e) => {
-        if (e.target.checked) {
-          if (!instructors.some(i => i.starnumber === starnumber)) {
-            instructors.push({ name, starnumber, hours: "" });
-          }
-        } else {
-          instructors = instructors.filter(i => i.starnumber !== starnumber);
-        }
-
-        updateInstructorSection();
-        saveSessionToLocalStorage();
-      });
-
-      list.prepend(item);
-    }
-
-     // ⭐ UPDATE INSTRUCTOR LIST
-    function updateInstructorSection() {
-       const instructorList = document.getElementById("instructorList");
-       instructorList.innerHTML = "";
-
-       instructors.forEach((i, index) => {
-           instructorList.innerHTML += `
-              <li>
-                 ${i.name} — ${i.starnumber}
-                 <input type="number" min="0" step="1" 
-                      value="${i.hours || ""}" 
-                      placeholder="Hours"
-                      style="width:70px; margin-left:10px;"
-                      oninput="updateInstructorHoursValue(${index}, this.value)">
-      </li>
+        <button class="removeBtn">Remove</button>
+      </div>
     `;
-  });
-}
 
-     function updateInstructorHoursValue(index, value) {
-        instructors[index].hours = value;
+    // Remove attendee
+    item.querySelector(".removeBtn").addEventListener("click", () => {
+      sessionScans = sessionScans.filter(s => s.starnumber !== starnumber);
+      instructors = instructors.filter(i => i.starnumber !== starnumber);
+      item.remove();
+      updateInstructorSection();
+      saveSessionToLocalStorage();
+    });
+
+    // Instructor toggle
+    item.querySelector(".instructorToggle").addEventListener("change", (e) => {
+      if (e.target.checked) {
+        if (!instructors.some(i => i.starnumber === starnumber)) {
+          instructors.push({ name, starnumber, hours: "" });
+        }
+      } else {
+        instructors = instructors.filter(i => i.starnumber !== starnumber);
+      }
+      updateInstructorSection();
+      saveSessionToLocalStorage();
+    });
+
+    list.prepend(item);
+  }
+
+  // Update instructor list (with hours input)
+  function updateInstructorSection() {
+    const instructorList = document.getElementById("instructorList");
+    instructorList.innerHTML = "";
+    instructors.forEach((i, index) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span>${i.name} — ${i.starnumber}</span>
+        <input type="number" min="0" step="1"
+               value="${i.hours || ""}"
+               placeholder="Hours"
+               style="width:70px; margin-left:10px;"
+               data-index="${index}" />
+      `;
+      li.querySelector("input").addEventListener("input", (e) => {
+        const ix = Number(e.target.dataset.index);
+        instructors[ix].hours = e.target.value;
         saveSessionToLocalStorage();
-}
+      });
+      instructorList.appendChild(li);
+    });
+  }
 
+  // Normalize QR payload and process
+  function onScanSuccess(decodedText) {
+    if (!sessionActive) return;
 
-    function showWarning(message) {
-      const status = document.getElementById("status");
-      status.style.color = "red";
-      status.textContent = message;
-      setTimeout(() => status.textContent = "", 3000);
+    // Prevent rapid duplicate handling
+    if (scanCooldown || decodedText === lastScan) return;
+    scanCooldown = true;
+    lastScan = decodedText;
+
+    try { beep.play(); } catch {}
+
+    // Normalize separators: treat pipes and common vertical bars as delimiters
+    const normalized = decodedText.replace(/[\u2502\u2758\u27D8\u2016\u2223\|]+/g, '|');
+    const parts = normalized.split('|').map(p => p.trim());
+
+    const name = parts[0] || "";
+    const starnumber = parts[1] || "";
+    const division = parts[2] || "";
+
+    if (!name || !starnumber) {
+      showWarning("⚠️ Invalid QR code format.");
+      setTimeout(() => { scanCooldown = false; }, 1500);
+      return;
     }
 
-    function clearWarning() {
-      const status = document.getElementById("status");
-      status.textContent = "";
-      status.style.color = "black";
+    if (sessionScans.some(s => s.starnumber === starnumber)) {
+      showWarning(`⚠️ Duplicate scan: ${name} (${starnumber})`);
+      setTimeout(() => { scanCooldown = false; }, 1500);
+      return;
     }
 
-    function onScanSuccess(decodedText) {
-      if (!sessionActive) return;
-      if (scanCooldown || decodedText === lastScan) return;
+    clearWarning();
+    addScanToList(name, starnumber);
+    sessionScans.push({ name, starnumber, division });
+    saveSessionToLocalStorage();
 
-      scanCooldown = true;
-      lastScan = decodedText;
+    setTimeout(() => { scanCooldown = false; }, 1000);
+  }
 
-      beep.play();
-
-      const cleaned = decodedText.replace(/[|¦｜‖∣]/g, "|");
-      const parts = cleaned.split("|").map(p => p.trim());
-
-      const name = parts[0] || "";
-      const starnumber = parts[1] || "";
-      const division = parts[2] || "";
-
-      if (!name || !starnumber) {
-        showWarning("⚠️ Invalid QR code format.");
-        setTimeout(() => scanCooldown = false, 2000);
-        return;
-      }
-
-      if (sessionScans.some(s => s.starnumber === starnumber)) {
-        showWarning(`⚠️ Duplicate scan: ${name} (${starnumber})`);
-        setTimeout(() => scanCooldown = false, 2000);
-        return;
-      }
-
-      clearWarning();
-
-      addScanToList(name, starnumber);
-
-      sessionScans.push({ name, starnumber, division });
-
-      saveSessionToLocalStorage();
-
-      setTimeout(() => scanCooldown = false, 2000);
-    }
-
-
-    // ⭐ START SESSION
-    document.getElementById("startSessionBtn").addEventListener("click", () => {
-      const title = document.getElementById("trainingTitle").value;
-      const date = document.getElementById("trainingDate").value;
-      const hours = document.getElementById("trainingHours").value;
-      const submitterName = document.getElementById("submitterName").value;
-      const submitterStar = document.getElementById("submitterStar").value;
-
-      if (!title || !date || !hours || !submitterName || !submitterStar) {
-        alert("Please fill out ALL fields before starting the session.");
-        return;
-      }
-
-      lockFields();
-      sessionActive = true;
-      saveSessionToLocalStorage();
-
-      document.getElementById("startSessionBtn").style.display = "none";
-      document.getElementById("newSessionBtn").style.display = "inline-block";
-      document.getElementById("downloadCsvBtn").style.display = "inline-block";
-      document.getElementById("reader").style.display = "block";
-      document.getElementById("manualEntry").style.display = "block";
-
-      html5QrCode = new Html5Qrcode("reader");
-
-      html5QrCode.start(
+  // Safely (re)start the camera if a session is active
+  async function startCameraSafely() {
+    try {
+      if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+      await html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        decodedText => onScanSuccess(decodedText)
+        (decodedText) => onScanSuccess(decodedText),
+        () => {} // ignore scan errors
       );
-    });
+    } catch (err) {
+      showWarning("Camera access error. Use manual entry if needed.");
+      console.error(err);
+    }
+  }
 
-    // ⭐ MANUAL ENTRY
-    document.getElementById("addManualBtn").addEventListener("click", () => {
-      const name = document.getElementById("manualName").value.trim();
-      const starnumber = document.getElementById("manualStar").value.trim();
+  // Restore session from localStorage (called on page load)
+  function restoreSessionFromLocalStorage() {
+    const data = safeGetItem(STORAGE_KEY);
+    if (!data) return;
 
-      if (!name || !starnumber) {
-        alert("Please enter both name and star number.");
-        return;
-      }
+    // Restore fields
+    document.getElementById("trainingTitle").value   = data.trainingTitle || "";
+    document.getElementById("trainingDate").value    = data.trainingDate || "";
+    document.getElementById("trainingHours").value   = data.trainingHours || "";
+    document.getElementById("submitterName").value   = data.submitterName || "";
+    document.getElementById("submitterStar").value   = data.submitterStar || "";
+    document.getElementById("trainingNotes").value   = data.trainingNotes || "";
 
-      if (sessionScans.some(s => s.starnumber === starnumber)) {
-        alert("This attendee is already recorded.");
-        return;
-      }
+    // Restore arrays
+    sessionScans = Array.isArray(data.sessionScans) ? data.sessionScans : [];
+    instructors  = Array.isArray(data.instructors)  ? data.instructors  : [];
 
-      addScanToList(name, starnumber);
+    // Rebuild UI lists
+    document.getElementById("scanList").innerHTML = "";
+    sessionScans.forEach(s => addScanToList(s.name, s.starnumber));
+    updateInstructorSection();
 
-      sessionScans.push({ name, starnumber, division: "Manual Entry" });
+    // Restore session state & UI
+    sessionActive = !!data.sessionActive;
+    if (sessionActive) {
+      lockFields();
+      document.getElementById("startSessionBtn").style.display   = "none";
+      document.getElementById("newSessionBtn").style.display     = "inline-block";
+      document.getElementById("downloadCsvBtn").style.display    = "inline-block";
+      document.getElementById("reader").style.display            = "block";
+      document.getElementById("manualEntry").style.display       = "block";
 
-      saveSessionToLocalStorage();
+      if (AUTO_RESTART_CAMERA) startCameraSafely();
+    }
+  }
 
-      document.getElementById("manualName").value = "";
-      document.getElementById("manualStar").value = "";
-    });
+  // ⭐ START SESSION
+  document.getElementById("startSessionBtn").addEventListener("click", () => {
+    const title = document.getElementById("trainingTitle").value.trim();
+    const date = document.getElementById("trainingDate").value.trim();
+    const hours = document.getElementById("trainingHours").value.trim();
+    const submitterName = document.getElementById("submitterName").value.trim();
+    const submitterStar = document.getElementById("submitterStar").value.trim();
 
-    // ⭐ DOWNLOAD CSV WITH INSTRUCTOR HOURS
-    function downloadCSV() {
-      if (sessionScans.length === 0) {
-        alert("No attendees recorded.");
-        return;
-      }
-
-      const confirmEnd = confirm(
-        "Downloading the CSV will end the current session.\n\nDo you want to continue?"
-      );
-
-      if (!confirmEnd) return;
-
-      const title = document.getElementById("trainingTitle").value;
-      const date = document.getElementById("trainingDate").value;
-      const hours = document.getElementById("trainingHours").value;
-      const submitterName = document.getElementById("submitterName").value;
-      const submitterStar = document.getElementById("submitterStar").value;
-
-      let csv = "Training Title,Date,Hours,Submitter Name,Submitter Star\n";
-      csv += `"${title}","${date}","${hours}","${submitterName}","${submitterStar}"\n\n`;
-      
-      csv += "Notes\n";
-      csv += `"${document.getElementById("trainingNotes").value.replace(/"/g, '""')}"\n\n`;
-
-      // ⭐ INSTRUCTOR LIST SECTION
-      csv += "--- INSTRUCTORS ---\n";
-     csv += "Name,Star Number,Hours\n";
-
-	instructors.forEach(i => {
- 		 csv += `"${i.name}","${i.starnumber}","${i.hours || ""}"\n`;
-});
-
-
-      csv += "\n";
-
-      // ⭐ FULL ATTENDEE LIST SECTION
-      csv += "--- ATTENDEES ---\n";
-      csv += "Name,Star Number,Division,Instructor\n";
-
-      sessionScans.forEach(s => {
-        const isInstructor = instructors.some(i => i.starnumber === s.starnumber);
-        csv += `"${s.name}","${s.starnumber}","${s.division}","${isInstructor ? "YES" : "NO"}"\n`;
-      });
-
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `Training_Attendance_${date}.csv`;
-      link.click();
-
-      URL.revokeObjectURL(url);
-
-      document.getElementById("newSessionBtn").click();
+    if (!title || !date || !hours || !submitterName || !submitterStar) {
+      alert("Please fill out ALL fields before starting the session.");
+      return;
     }
 
-    document.getElementById("downloadCsvBtn").addEventListener("click", downloadCSV)
+    lockFields();
+    sessionActive = true;
+    saveSessionToLocalStorage();
 
-   		// ⭐ END SESSION
-      		 document.getElementById("newSessionBtn").addEventListener("click", () => {
-      sessionActive = false;
+    document.getElementById("startSessionBtn").style.display = "none";
+    document.getElementById("newSessionBtn").style.display = "inline-block";
+    document.getElementById("downloadCsvBtn").style.display = "inline-block";
+    document.getElementById("reader").style.display = "block";
+    document.getElementById("manualEntry").style.display = "block";
 
-      unlockFields();
-      ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar"]
-        .forEach(id => document.getElementById(id).value = "");
-      
-      document.getElementById("trainingNotes").value = "";
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      (decodedText) => onScanSuccess(decodedText),
+      (err) => { /* ignore scan errors */ }
+    ).catch(err => {
+      showWarning("Camera access error. Use manual entry if needed.");
+      console.error(err);
+    });
+  });
 
-      document.getElementById("scanList").innerHTML = "";
-      document.getElementById("instructorList").innerHTML = "";
-    
-      sessionScans = [];
-      instructors = [];
+  // ⭐ MANUAL ENTRY
+  document.getElementById("addManualBtn").addEventListener("click", () => {
+    const name = document.getElementById("manualName").value.trim();
+    const starnumber = document.getElementById("manualStar").value.trim();
 
-      document.getElementById("startSessionBtn").style.display
+    if (!name || !starnumber) {
+      alert("Please enter both name and star number.");
+      return;
+    }
+    if (sessionScans.some(s => s.starnumber === starnumber)) {
+      alert("This attendee is already recorded.");
+      return;
+    }
 
+    addScanToList(name, starnumber);
+    sessionScans.push({ name, starnumber, division: "Manual Entry" });
+    saveSessionToLocalStorage();
 
+    document.getElementById("manualName").value = "";
+    document.getElementById("manualStar").value = "";
+  });
 
-document.getElementById("startSessionBtn").style.display = "inline-block";
-     		document.getElementById("newSessionBtn").style.display = "none";
-      		document.getElementById("downloadCsvBtn").style.display = "none";
-      		document.getElementById("reader").style.display = "none";
-      		document.getElementById("manualEntry").style.display = "none";
+  // ⭐ DOWNLOAD CSV WITH INSTRUCTOR HOURS
+  function downloadCSV() {
+    if (sessionScans.length === 0) {
+      alert("No attendees recorded.");
+      return;
+    }
+    const confirmEnd = confirm(
+      "Downloading the CSV will end the current session.\n\nDo you want to continue?"
+    );
+    if (!confirmEnd) return;
 
-      if (html5QrCode) {
-        html5QrCode.stop().catch(() => {});
-      }
-      html5QrCode = null;
+    const title = document.getElementById("trainingTitle").value;
+    const date = document.getElementById("trainingDate").value;
+    const hours = document.getElementById("trainingHours").value;
+    const submitterName = document.getElementById("submitterName").value;
+    const submitterStar = document.getElementById("submitterStar").value;
 
-      localStorage.removeItem("trainingSession");
+    let csv = "Training Title,Date,Hours,Submitter Name,Submitter Star\n";
+    csv += `"${title}","${date}","${hours}","${submitterName}","${submitterStar}"\n\n`;
+    csv += "Notes\n";
+    csv += `"${document.getElementById("trainingNotes").value.replace(/"/g, '""')}"\n\n`;
+
+    // Instructors
+    csv += "--- INSTRUCTORS ---\n";
+    csv += "Name,Star Number,Hours\n";
+    instructors.forEach(i => {
+      csv += `"${i.name}","${i.starnumber}","${i.hours || ""}"\n`;
+    });
+    csv += "\n";
+
+    // Attendees
+    csv += "--- ATTENDEES ---\n";
+    csv += "Name,Star Number,Division,Instructor\n";
+    sessionScans.forEach(s => {
+      const isInstructor = instructors.some(i => i.starnumber === s.starnumber);
+      csv += `"${s.name}","${s.starnumber}","${s.division}","${isInstructor ? "YES" : "NO"}"\n`;
     });
 
-    // ⭐ AUTO-SAVE TRAINING FIELD CHANGES
-    ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar","trainingNotes"]
-      .forEach(id => {
-        document.getElementById(id).addEventListener("input", saveSessionToLocalStorage);
-      });
+    // Add BOM for better Excel compatibility
+    const BOM = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const blob = new Blob([BOM, csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Training_Attendance_${date}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
 
-  </script>
+    // End session after export
+    document.getElementById("newSessionBtn").click();
+  }
+  document.getElementById("downloadCsvBtn").addEventListener("click", downloadCSV);
 
+  // ⭐ END SESSION
+  document.getElementById("newSessionBtn").addEventListener("click", async () => {
+    sessionActive = false;
+    unlockFields();
+    ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar"]
+      .forEach(id => document.getElementById(id).value = "");
+    document.getElementById("trainingNotes").value = "";
+    document.getElementById("scanList").innerHTML = "";
+    document.getElementById("instructorList").innerHTML = "";
+    sessionScans = [];
+    instructors = [];
+
+    document.getElementById("startSessionBtn").style.display = "inline-block";
+    document.getElementById("newSessionBtn").style.display = "none";
+    document.getElementById("downloadCsvBtn").style.display = "none";
+    document.getElementById("reader").style.display = "none";
+    document.getElementById("manualEntry").style.display = "none";
+
+    if (html5QrCode) {
+      try { await html5QrCode.stop(); } catch {}
+    }
+    html5QrCode = null;
+
+    // Clear local PII after end
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  // ⭐ AUTO-SAVE TRAINING FIELD CHANGES (debounced optional)
+  let saveTimer = null;
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveSessionToLocalStorage, 200);
+  }
+  ["trainingTitle","trainingDate","trainingHours","submitterName","submitterStar","trainingNotes"]
+    .forEach(id => {
+      document.getElementById(id).addEventListener("input", scheduleSave);
+    });
+
+  // ⭐ RESTORE ON LOAD (replaces previous onload clear)
+  window.addEventListener("load", () => {
+    restoreSessionFromLocalStorage();
+  });
+</script>
 </body>
 </html>
