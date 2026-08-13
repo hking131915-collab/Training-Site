@@ -350,8 +350,6 @@
 
       if (sessionScans.some(s => s.starnumber === starnumber)) {
         showWarning(`⚠️ Duplicate scan: ${name} (${starnumber})`);
-	lastScan = "";  // <-- Fix
-        setTimeout(() => scanCooldown = false, 2000);
         return;
       }
 
