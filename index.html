@@ -349,6 +349,7 @@
       }
 
       if (sessionScans.some(s => s.starnumber === starnumber)) {
+        lastScan = '';
         showWarning(`⚠️ Duplicate scan: ${name} (${starnumber})`);
         setTimeout(() => scanCooldown = false, 2000);
         return;
@@ -409,6 +410,7 @@
       }
 
       if (sessionScans.some(s => s.starnumber === starnumber)) {
+        lastScan = '';
         alert("This attendee is already recorded.");
         return;
       }
